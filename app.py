@@ -112,7 +112,13 @@ admin = User(
     forceRelogin=False
 )
 admin.set_password('admin')
+adminRole = UserRole(
+    userId='a41c5146-b538-46c8-99dd-a50801ddf71f',
+    name='admin',
+    userRoleId='bd06a234-1356-4cf1-9dde-1655c52ac920'
+)
 db.session.add(admin)
+db.session.add(adminRole)
 db.session.commit()
 
 @app.route('/test', methods=['GET'])
