@@ -61,7 +61,7 @@ class Food(db.Model):
     size = db.Column(db.Float, nullable=False)
 
     subcategory_id = db.Column(db.Integer, db.ForeignKey('subcategories.id'), nullable=False)
-    user = db.Column(db.Integer, db.ForeignKey('user.userId'), nullable=False)
+    user = db.Column(db.String(255), db.ForeignKey('user.userId'), nullable=False)
 
     def json(self):
         return {
