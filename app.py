@@ -105,6 +105,14 @@ class UserRole(db.Model):
         return {'userRoleId': self.userRoleId, 'name': self.name, 'user': self.user}
 
 db.create_all()
+admin = User(
+    userId='a41c5146-b538-46c8-99dd-a50801ddf71f',
+    name='admin',
+    passwordHash='scrypt:32768:8:1$Jlkbt32vL6tn3ioG$595109531c096caad3bc59cb8e368b28ad5eea19536048e73cf1a3dfee56bc1f9c91aac7c2552903f47be066c4f459f5d3bb3267f7b6f2f79d00297d099ff908',
+    emailAddress='admin@admin.com',
+    forceRelogin=False
+)
+db.session.add(admin)
 
 @app.route('/test', methods=['GET'])
 def test():
