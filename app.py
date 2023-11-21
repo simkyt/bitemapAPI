@@ -97,29 +97,14 @@ class UserRole(db.Model):
     __tablename__ = 'userrole'
 
     userRoleId = db.Column(db.String(255), primary_key=True)
-    name = db.Column(db.String(25), unique=True, nullable=False)
+    name = db.Column(db.String(25), nullable=False)
 
-    userId = db.Column(db.String(255), db.ForeignKey('user.userId'), nullable=True)
+    userId = db.Column(db.String(255), db.ForeignKey('user.userId'), nullable=False)
 
     def json(self):
         return {'userRoleId': self.userRoleId, 'name': self.name, 'user': self.user}
 
 db.create_all()
-admin = User(
-    userId='a41c5146-b538-46c8-99dd-a50801ddf71f',
-    name='admin',
-    emailAddress='admin@admin.com',
-    forceRelogin=False
-)
-admin.set_password('admin')
-adminRole = UserRole(
-    userId='a41c5146-b538-46c8-99dd-a50801ddf71f',
-    name='admin',
-    userRoleId='bd06a234-1356-4cf1-9dde-1655c52ac920'
-)
-db.session.add(admin)
-db.session.add(adminRole)
-db.session.commit()
 
 @app.route('/test', methods=['GET'])
 def test():
