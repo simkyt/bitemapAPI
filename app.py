@@ -97,7 +97,7 @@ class UserRole(db.Model):
     __tablename__ = 'userrole'
 
     userRoleId = db.Column(db.String(255), primary_key=True)
-    name = db.Column(db.String(25), unique=False, nullable=False)
+    name = db.Column(db.String(25), unique=False, nullable=False) # allows several rows with the same role name
 
     userId = db.Column(db.String(255), db.ForeignKey('user.userId'), nullable=False)
 
