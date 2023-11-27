@@ -697,6 +697,29 @@ def validate_subcategory_update(data):
 
 ################################################################################################################################################
 
+@app.route('/api/foods', methods=['GET'])
+@jwt_required()
+def get_all_foods():
+    try:
+        current_user_identity = get_jwt_identity()
+        current_user = User.query.filter_by(userId=current_user_identity['userId']).first()
+        current_user_roles = get_jwt()["roles"]
+
+        if not current_user:
+            return jsonify({'message': 'User not found.'}), 404
+
+        if current_user.forceRelogin:
+            return jsonify({'message': 'Re-login required.'}), 403
+
+        if 'user' not in current_user_roles and 'admin' not in current_user_roles:
+            return jsonify({'message': 'Access denied: User does not have the required role'}), 403
+
+        foods = [food.json() for food in Food.query.all()]
+        return make_response(jsonify(foods), 200)
+
+    except Exception as e:
+        return make_response(jsonify({'message': f'error getting foods: {str(e)}'}), 500)
+
 @app.route('/api/categories/<int:category_id>/subcategories/<int:subcategory_id>/foods', methods=['GET'])
 @jwt_required()
 def get_foods(category_id, subcategory_id):
