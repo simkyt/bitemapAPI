@@ -127,7 +127,7 @@ def guest_access():
         'aud': audience,
     }
 
-    access_token = create_access_token(identity=guest_identity, additional_claims=additional_claims, expires_delta=timedelta(minutes=5))
+    access_token = create_access_token(identity=guest_identity, additional_claims=additional_claims, expires_delta=timedelta(hours=24))
 
     return jsonify(access_token=access_token), 200
 
@@ -185,7 +185,7 @@ def login():
         'roles': [role.name for role in user.roles]
     }
 
-    access_token = create_access_token(identity={'userId': user.userId, 'name': user.name}, additional_claims=additional_claims, expires_delta=timedelta(minutes=10))
+    access_token = create_access_token(identity={'userId': user.userId, 'name': user.name}, additional_claims=additional_claims, expires_delta=timedelta(hours=24))
     refresh_token = create_refresh_token(identity={'userId': user.userId}, expires_delta=timedelta(hours=24))
 
     return jsonify(access_token=access_token, refresh_token=refresh_token), 200
