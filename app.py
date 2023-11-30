@@ -879,7 +879,7 @@ def delete_food(category_id, subcategory_id, food_id):
         return make_response(jsonify({'message': f'error deleting food: {str(e)}'}), 500)
 
 
-@app.route('/api/categories/<int:category_id>/subcategories/<int:subcategory_id>/foods/<int:food_id>', methods=['PUT'])
+@app.route('/api/categories/<int:category_id>/subcategories/<int:subcategory_id>/foods/<string:food_id>', methods=['PUT'])
 @jwt_required()
 def update_food(category_id, subcategory_id, food_id):
     try:
