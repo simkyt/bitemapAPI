@@ -806,7 +806,7 @@ def create_food(category_id, subcategory_id):
     except Exception as e:
         return make_response(jsonify({'message': f'error creating food: {str(e)}'}), 500)
 
-@app.route('/api/categories/<int:category_id>/subcategories/<int:subcategory_id>/foods/<int:food_id>', methods=['GET'])
+@app.route('/api/categories/<int:category_id>/subcategories/<int:subcategory_id>/foods/<string:food_id>', methods=['GET'])
 @jwt_required()
 def get_food(category_id, subcategory_id, food_id):
     current_user_identity = get_jwt_identity()
@@ -841,7 +841,7 @@ def get_food(category_id, subcategory_id, food_id):
     except Exception as e:
         return make_response(jsonify({'message': f'error getting food: {str(e)}'}), 500)
 
-@app.route('/api/categories/<int:category_id>/subcategories/<int:subcategory_id>/foods/<int:food_id>', methods=['DELETE'])
+@app.route('/api/categories/<int:category_id>/subcategories/<int:subcategory_id>/foods/<string:food_id>', methods=['DELETE'])
 @jwt_required()
 def delete_food(category_id, subcategory_id, food_id):
     try:
@@ -932,6 +932,13 @@ def update_food(category_id, subcategory_id, food_id):
         food.perserving = data.get('perserving', food.perserving)
         food.size = data.get('size', food.size)
 
+        if 'subcategory_id' in data:
+            new_subcategory = SubCategory.query.get(data['subcategory_id'])
+            if not new_subcategory or new_subcategory.category_id != category_id:
+                return make_response(
+                    jsonify({'message': 'New subcategory not found or does not belong to the specified category'}), 404)
+            food.subcategory_id = data['subcategory_id']
+            
         db.session.commit()
         return make_response(jsonify(food.json()), 200)
 
@@ -978,12 +985,14 @@ def validate_data(data):
 
 def validate_update_data(data):
     try:
-        expected_fields = {'name', 'brand', 'kcal', 'carbs', 'fat', 'protein', 'serving', 'perserving', 'size'}
+        expected_fields = {'subcategory_id', 'name', 'brand', 'kcal', 'carbs', 'fat', 'protein', 'serving', 'perserving', 'size'}
 
         if not set(data.keys()).issubset(expected_fields):
             unexpected_fields = set(data.keys()) - expected_fields
             return False, f'Unexpected field(s): {", ".join(unexpected_fields)}', 400
 
+        if 'subcategory_id' in data and not isinstance(data['subcategory_id'], int):
+            return False, 'Subcategory ID must be a number', 422
         if 'name' in data and not isinstance(data['name'], str):
             return False, 'Name must be a string', 422
         if 'brand' in data and not isinstance(data['brand'], str):
