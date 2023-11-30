@@ -47,7 +47,7 @@ class SubCategory(db.Model):
 class Food(db.Model):
     __tablename__ = 'foods'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(255), primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     brand = db.Column(db.String(50), nullable=True)
 
@@ -789,6 +789,7 @@ def create_food(category_id, subcategory_id):
             return make_response(jsonify({'message': validation_message}), status_code)
 
         new_food = Food(
+            id=data['id'],
             name=data['name'], brand=data.get('brand', None),
             kcal=data['kcal'], carbs=data['carbs'],
             fat=data['fat'], protein=data['protein'],
@@ -940,7 +941,7 @@ def update_food(category_id, subcategory_id, food_id):
 
 def validate_data(data):
     try:
-        required_fields = {'name', 'brand', 'kcal', 'carbs', 'fat', 'protein', 'serving', 'perserving', 'size'}
+        required_fields = {'id', 'name', 'brand', 'kcal', 'carbs', 'fat', 'protein', 'serving', 'perserving', 'size'}
 
         if not all(field in data for field in required_fields):
             return False, 'Some required fields are missing', 400
@@ -949,6 +950,8 @@ def validate_data(data):
             unexpected_fields = set(data.keys()) - required_fields
             return False, f'Unexpected field(s): {", ".join(unexpected_fields)}', 400
 
+        if not isinstance(data['id'], str):
+            return False, 'ID must be a string', 422
         if not isinstance(data['name'], str):
             return False, 'Name must be a string', 422
         if not isinstance(data['brand'], str):
