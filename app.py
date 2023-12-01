@@ -936,7 +936,7 @@ def update_food(category_id, subcategory_id, food_id):
             new_subcategory = SubCategory.query.get(data['subcategory_id'])
             if not new_subcategory:
                 return make_response(
-                    jsonify({'message': 'New subcategory not found or does not belong to the specified category'}), 404)
+                    jsonify({'message': 'New subcategory not found'}), 404)
             food.subcategory_id = data['subcategory_id']
 
         db.session.commit()
