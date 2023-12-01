@@ -714,7 +714,14 @@ def get_all_foods():
         if 'user' not in current_user_roles and 'admin' not in current_user_roles:
             return jsonify({'message': 'Access denied: User does not have the required role'}), 403
 
-        foods = [food.json() for food in Food.query.all()]
+        # Retrieve query parameters
+        food_name = request.args.get('search', '')
+        page = request.args.get('page', 1, type=int)
+
+        # Query the database with filter and pagination
+        food_query = Food.query.filter(Food.name.ilike(f'%{food_name}%')).paginate(page=page, per_page=20, error_out=False)
+        foods = [food.json() for food in food_query.items]
+
         return make_response(jsonify(foods), 200)
 
     except Exception as e:
