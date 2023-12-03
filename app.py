@@ -956,13 +956,15 @@ def update_food(category_id, subcategory_id, food_id):
 def validate_data(data):
     try:
         required_fields = {'id', 'name', 'brand', 'kcal', 'carbs', 'fat', 'protein', 'serving', 'perserving', 'size'}
+        allowed_fields = required_fields.union({'subcategory_id'})
 
         if not all(field in data for field in required_fields):
             return False, 'Some required fields are missing', 400
 
-        if not set(data.keys()).issubset(required_fields):
-            unexpected_fields = set(data.keys()) - required_fields
+        if not set(data.keys()).issubset(allowed_fields):
+            unexpected_fields = set(data.keys()) - allowed_fields
             return False, f'Unexpected field(s): {", ".join(unexpected_fields)}', 400
+
 
         if not isinstance(data['id'], str):
             return False, 'ID must be a string', 422
