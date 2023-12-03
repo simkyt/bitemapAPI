@@ -995,9 +995,10 @@ def validate_data(data):
 def validate_update_data(data):
     try:
         expected_fields = {'subcategory_id', 'name', 'brand', 'kcal', 'carbs', 'fat', 'protein', 'serving', 'perserving', 'size'}
+        allowed_fields = expected_fields.union({'id'})
 
-        if not set(data.keys()).issubset(expected_fields):
-            unexpected_fields = set(data.keys()) - expected_fields
+        if not set(data.keys()).issubset(allowed_fields):
+            unexpected_fields = set(data.keys()) - allowed_fields
             return False, f'Unexpected field(s): {", ".join(unexpected_fields)}', 400
 
         if 'subcategory_id' in data and not isinstance(data['subcategory_id'], int):
